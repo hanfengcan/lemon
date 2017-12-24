@@ -1,0 +1,58 @@
+{
+    "name": "lemon",
+    "displayName": "lemon",
+    "description": "a nodemcu tool for vscode extension",
+    "version": "0.0.1",
+    "publisher": "lemon",
+    "engines": {
+        "vscode": "^1.18.0"
+    },
+    "categories": [
+        "Other"
+    ],
+    "activationEvents": [
+        "//指定插件激活事件",
+        "workspaceContains:**/.serialport"
+    ],
+    "main": "./out/extension",
+    "contributes": {
+        "commands": [
+            {
+                "command": "port.select",
+                "title": "Ports: 选择COM口"
+            },
+            {
+                "command": "port.baudrate",
+                "title": "Ports: 选择波特率"
+            },
+            {
+                "command": "port.dataparitystop",
+                "title": "Ports: 数据位校验位停止位"
+            },
+            {
+                "command": "port.open",
+                "title": "Ports: 打开串口"
+            },
+            {
+                "command": "port.close",
+                "title": "Ports: 关闭串口"
+            }
+        ]
+    },
+    "scripts": {
+        "vscode:prepublish": "npm run compile",
+        "compile": "tsc -p ./",
+        "watch": "tsc -watch -p ./",
+        "postinstall": "node ./node_modules/vscode/bin/install",
+        "test": "npm run compile && node ./node_modules/vscode/bin/test"
+    },
+    "devDependencies": {
+        "typescript": "^2.6.1",
+        "vscode": "^1.1.6",
+        "@types/node": "^7.0.43",
+        "@types/mocha": "^2.2.42"
+    },
+    "dependencies": {
+        "serialport": "^6.0.4"
+    }
+}
