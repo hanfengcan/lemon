@@ -5,7 +5,8 @@ import * as vscode from 'vscode'
 import {window, StatusBarAlignment, StatusBarItem, QuickPickItem, OutputChannel, Terminal} from 'vscode'
 
 import * as sport from "serialport";
-import  { serialCtrl } from "./serialCtrl"
+import { serialCtrl } from "./serialCtrl"
+import { Editor } from "./textEditor" 
 
 import { port } from '_debugger';
 import { fail } from 'assert';
@@ -21,8 +22,10 @@ export class serialMonitor {
 
   private _currentBaudRate : number;
   private _currentCom : string;
-  private _openStatus : boolean = false
+  private _openStatus : boolean = false;
+
   private _portCtrl : serialCtrl = null;
+  private _editor : Editor = null;
 
   private _dataBit = serialMonitor.DEFAULT_DATA_BIT;
   private _parity = serialMonitor.DEFAULT_PARITY;
@@ -55,21 +58,22 @@ export class serialMonitor {
     this.init()
   }
 
-  private openUpdate() {
-    if (this._openStatus === true) {
-      this._openStatusBarItem.command = "port.open";
-      this._openStatusBarItem.text = `$(plug)`;
-      this._openStatusBarItem.tooltip = "打开串口";
-      this._openStatusBarItem.show();
-  
-      this._openStatus = false;
-    } else {
+  private openUpdate(status: boolean) {
+    //开启串口
+    if (status === true) {
       this._openStatusBarItem.command = "port.close";
       this._openStatusBarItem.text = `$(x)`;
       this._openStatusBarItem.tooltip = "关闭串口";
       this._openStatusBarItem.show();
 
       this._openStatus = true;
+    } else {
+      this._openStatusBarItem.command = "port.open";
+      this._openStatusBarItem.text = `$(plug)`;
+      this._openStatusBarItem.tooltip = "打开串口";
+      this._openStatusBarItem.show();
+
+      this._openStatus = false;
     }
   }
 
@@ -82,7 +86,9 @@ export class serialMonitor {
     // this._Terminal = window.createTerminal({name: 'SerialPort'});
     // this._Terminal.show();
 
-    this._portCtrl = new serialCtrl(this._outputChannel)
+    this._portCtrl = new serialCtrl(this._outputChannel);
+    this._editor = Editor.getInstance();
+    // console.log(this._editor);
 
     this._portsStatusBarItem = window.createStatusBarItem(StatusBarAlignment.Right, 2);
     this._portsStatusBarItem.command = "port.select";
@@ -117,11 +123,8 @@ export class serialMonitor {
     return serialMonitor._serialMonitor;
   }
 
-  /**
-   * 关闭串口
-   */
   public dispose() {
-    return this._portCtrl.close()
+    return this._portCtrl.close();
   }
 
   /**
@@ -182,7 +185,7 @@ export class serialMonitor {
     this._baudRateStatusBarItem.text = chosen;
     // 如果串口打开,更新波特率
     if (this._portCtrl.isOpen) {
-      this._portCtrl.changeBaudRate(this._currentBaudRate)
+      this._portCtrl.changeBaudRate(this._currentBaudRate);
     }
   }
 
@@ -249,12 +252,14 @@ export class serialMonitor {
           }
         )
         if(result) {
-          await this._portCtrl.open()
+          await this._portCtrl.open(() => {
+            this.openUpdate(false);
+          })
           .then(() => {
-            this.openUpdate()
+            this.openUpdate(true);
           })
           .catch((err) => {
-            window.showErrorMessage(err.message)
+            window.showErrorMessage(err.message);
           })
         }
       } else {
@@ -263,17 +268,57 @@ export class serialMonitor {
       }
     } else {
       // 关闭串口
-      await this._portCtrl.close()
-      .then(() => {
-        this.openUpdate()
-      })
-      .catch((err) => {
-        this.openUpdate()
-        window.showErrorMessage(err.message)
-      })
-      
+      this.close();
     }
   }
 
+  public async close() {
+    await this._portCtrl.close()
+    .then(() => {
+      this.openUpdate(false);
+    })
+    .catch((err) => {
+      this.openUpdate(false);
+      window.showErrorMessage(err.message);
+    })
+  }
+
+  public async sendMessage() {
+    if (this._portCtrl.isOpen) {
+      let result = await window.showInputBox({placeHolder: '输入文本'});
+      if (result) {
+        this._portCtrl.sendMsg(result);
+      }
+    } else {
+      window.showErrorMessage('请先打开串口');
+    }
+  }
+
+  public sendAline() {
+    if (this._portCtrl.isOpen) {
+      let text = this._editor.sendAline();
+      this._portCtrl.sendMsg(text);
+    } else {
+      window.showErrorMessage('请先打开串口');
+    }
+  }
+
+  public sendAll() {
+    if (this._portCtrl.isOpen) {
+      let text = this._editor.sendAll();
+      this._portCtrl.sendMsg(text);
+    } else {
+      window.showErrorMessage('请先打开串口');
+    }
+  }
+
+  public sendSelect() {
+    if (this._portCtrl.isOpen) {
+      let text = this._editor.sendSelect();
+      this._portCtrl.sendMsg(text);
+    } else {
+      window.showErrorMessage('请先打开串口');
+    }
+  }
 }
 

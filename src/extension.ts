@@ -40,9 +40,24 @@ export function activate(context: vscode.ExtensionContext) {
     }));
     context.subscriptions.push(vscode.commands.registerCommand('port.close', () => {
         serialmonitor.open();
-    }))
+    }));
+    context.subscriptions.push(vscode.commands.registerCommand('port.input', () => {
+        serialmonitor.sendMessage();
+    }));
+
+    context.subscriptions.push(vscode.commands.registerCommand('port.sendALine', () => {
+        serialmonitor.sendAline();
+    }));
+    context.subscriptions.push(vscode.commands.registerCommand('port.sendAll', () => {
+        serialmonitor.sendAll();
+    }));
+    context.subscriptions.push(vscode.commands.registerCommand('port.sendSelect', () => {
+        serialmonitor.sendSelect();
+    }));
 }
 
 // this method is called when your extension is deactivated
 export function deactivate() {
+    const serialmonitor = serialMonitor.getInstance();
+    serialmonitor.close();
 }

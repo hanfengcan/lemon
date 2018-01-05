@@ -12,7 +12,7 @@ export class serialCtrl {
   /**
    * @description 获取COM列表
    */
-  public static list() : Promise<any[]> {
+  public static list(): Promise<any[]> {
     return new Promise((resolve, reject) => {
       sport.list((e: any, ports: {comName: string}[]) => {
         if (e) {
@@ -20,7 +20,7 @@ export class serialCtrl {
         } else {
           resolve(ports);
         }
-      })
+      });
     });
   }
 
@@ -50,7 +50,7 @@ export class serialCtrl {
       }
     }
     this._portName = port;
-    this._option = { ...this._option, option }
+    this._option = { ...this._option, option };
     this._portCtrl = new sport(this._portName, this._option);
     return true;
   }
@@ -58,7 +58,7 @@ export class serialCtrl {
   /**
    * @description 打开COM
    */
-  public open(): Promise<any> {
+  public open(cb: any): Promise<any> {
     return new Promise((resolve, reject) => {
       if (!this._portCtrl) {
         reject(new Error('串口没有创建'));
@@ -80,16 +80,22 @@ export class serialCtrl {
               this._outputChannel.appendLine(`[结束] 关闭串口 ${os.EOL}`);
             } else if (err.disconnected) {
               this._outputChannel.appendLine(`[结束] 断开连接 ${os.EOL}`);
+            } else {
+              this._outputChannel.appendLine(`[错误] ${err.toString()} ${os.EOL}`);
             }
+            this._portCtrl = null;
+            cb();
           })
           this._portCtrl.on('data', (data) => {
             this._outputChannel.append(data.toString());
           })
           this._portCtrl.on('error', (err) => {
             this._outputChannel.appendLine(`[错误] ${err.toString()} ${os.EOL}`);
+            this._portCtrl = null;
+            cb();
           })
-          this._outputChannel.appendLine(`[开启] ${this._portName}`)
-          resolve()
+          this._outputChannel.appendLine(`[开启] ${this._portName}`);
+          resolve();
         })
       }
     })
@@ -102,7 +108,7 @@ export class serialCtrl {
     return new Promise((resolve, reject) => {
       if (!this._portCtrl) {
         reject(new Error('串口没有创建'));
-        return
+        return;
       }
 
       if (!this._portCtrl.isOpen) {
@@ -112,7 +118,7 @@ export class serialCtrl {
         // 等待数据发送完再关闭串口
         this._portCtrl.drain((err) => {
           if (err) {
-            reject(err)
+            reject(err);
           } else {
             this._portCtrl.close((err) => {
               if (err) {
@@ -135,7 +141,7 @@ export class serialCtrl {
     return new Promise((resolve, reject) => {
       if (!this._portCtrl) {
         reject(new Error('串口没有创建'));
-        return
+        return;
       }
 
       if(this._portCtrl.isOpen) {
@@ -160,15 +166,15 @@ export class serialCtrl {
     return new Promise((resolve, reject) => {
       if (!this._portCtrl) {
         reject(new Error('串口没有创建'));
-        return
+        return;
       }
 
       if (this._portCtrl.isOpen) {
         this._portCtrl.write(msg, () => {
-          resolve()
+          resolve();
         })
       } else {
-        reject(new Error('串口没有打开'))
+        reject(new Error('串口没有打开'));
       }
     })
   }

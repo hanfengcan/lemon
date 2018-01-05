@@ -19,25 +19,69 @@
         "commands": [
             {
                 "command": "port.select",
-                "title": "Ports: 选择COM口"
+                "title": "选择COM口",
+                "category": "PORT"
             },
             {
                 "command": "port.baudrate",
-                "title": "Ports: 选择波特率"
+                "title": "选择波特率",
+                "category": "PORT"
             },
             {
                 "command": "port.dataparitystop",
-                "title": "Ports: 数据位校验位停止位"
+                "title": "数据位校验位停止位",
+                "category": "PORT"
             },
             {
                 "command": "port.open",
-                "title": "Ports: 打开串口"
+                "title": "打开串口",
+                "category": "PORT"
             },
             {
                 "command": "port.close",
-                "title": "Ports: 关闭串口"
+                "title": "关闭串口",
+                "category": "PORT"
+            },
+            {
+                "command": "port.input",
+                "title": "输入内容",
+                "category": "PORT"
+            },
+            {
+                "command": "port.sendALine",
+                "title": "发送一行内容",
+                "category": "PORT"
+            },
+            {
+                "command": "port.sendAll",
+                "title": "发送全文",
+                "category": "PORT"
+            },
+            {
+                "command": "port.sendSelect",
+                "title": "发送选择内容",
+                "category": "PORT"
             }
-        ]
+        ],
+        "menus": {
+            "editor/context": [
+                {
+                    "when": "editorHasSelection",
+                    "command": "port.sendSelect",
+                    "group": "navigation"
+                },
+                {
+                    "when": "editorTextFocus&&!editorHasSelection",
+                    "command": "port.sendALine",
+                    "group": "navigation"
+                },
+                {
+                    "when": "editorTextFocus&&!editorHasSelection",
+                    "command": "port.sendAll",
+                    "group": "navigation"
+                }
+            ]
+        }
     },
     "scripts": {
         "vscode:prepublish": "npm run compile",
