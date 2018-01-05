@@ -1,4 +1,4 @@
-import { TextEditor, window } from "vscode";
+import { TextEditor, window, Position } from "vscode";
 
 export class Editor {
 
@@ -32,6 +32,16 @@ export class Editor {
     return text
   }
 
+  /**
+   * @description 在最后一行插入文本
+   * @param text 
+   */
+  public insertText(text: string) {
+    this._editor.edit((edit) => {
+      let p = new Position(this._editor.document.lineCount, 0);
+      edit.insert(p, text)
+    })
+  }
 }
 
 

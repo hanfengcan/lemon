@@ -288,6 +288,7 @@ export class serialMonitor {
       let result = await window.showInputBox({placeHolder: '输入文本'});
       if (result) {
         this._portCtrl.sendMsg(result);
+        // this._editor.insertText(result);
       }
     } else {
       window.showErrorMessage('请先打开串口');
