@@ -8,6 +8,7 @@ export class serialCtrl {
   private _portName : string = null;
   private _portCtrl : any = null;
   private _option : any = { autoOpen: false, baudRate: 115200 };
+  private _outputDoc : boolean = true;
 
   /**
    * @description 获取COM列表
@@ -25,10 +26,19 @@ export class serialCtrl {
   }
 
   public get isOpen(): boolean {
-    return this._portCtrl && this._portCtrl.isOpen();
+    let r = this._portCtrl && this._portCtrl.isOpen;
+    return r
   }
 
-  public constructor(private _outputChannel: OutputChannel) {
+  public set outputDoc(s: boolean) {
+    this._outputDoc = s
+  }
+
+  public get isOutputDoc(): boolean{
+    return this._outputDoc
+  }
+
+  public constructor(private _outputChannel: OutputChannel, private insertText: any) {
 
   }
 
@@ -86,8 +96,14 @@ export class serialCtrl {
             this._portCtrl = null;
             cb();
           })
-          this._portCtrl.on('data', (data) => {
-            this._outputChannel.append(data.toString());
+          this._portCtrl.on('data', async(data) => {
+            if (this._outputDoc) {
+              this.insertText(data.toString()).catch(() => {
+                this._outputDoc = false;
+              });
+            } else {
+              this._outputChannel.append(data.toString());
+            }
           })
           this._portCtrl.on('error', (err) => {
             this._outputChannel.appendLine(`[错误] ${err.toString()} ${os.EOL}`);

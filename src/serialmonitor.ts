@@ -86,9 +86,9 @@ export class serialMonitor {
     // this._Terminal = window.createTerminal({name: 'SerialPort'});
     // this._Terminal.show();
 
-    this._portCtrl = new serialCtrl(this._outputChannel);
     this._editor = Editor.getInstance();
     // console.log(this._editor);
+    this._portCtrl = new serialCtrl(this._outputChannel, this._editor.insertText);
 
     this._portsStatusBarItem = window.createStatusBarItem(StatusBarAlignment.Right, 2);
     this._portsStatusBarItem.command = "port.select";
@@ -321,5 +321,18 @@ export class serialMonitor {
       window.showErrorMessage('请先打开串口');
     }
   }
-}
 
+  public async outputDoc() {
+    let result
+    if (Editor.activeTextEditor) {
+      await window.showInformationMessage("将数据输出到文件", "Y", "N");
+    } else {
+      await window.showInformationMessage("没有可输出文件, 只能输出到默认位置");
+    }
+    if (result === 'Y') {
+      this._portCtrl.outputDoc = true;
+    } else {
+      this._portCtrl.outputDoc = false;
+    }
+  }
+}

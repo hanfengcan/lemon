@@ -54,6 +54,10 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(vscode.commands.registerCommand('port.sendSelect', () => {
         serialmonitor.sendSelect();
     }));
+
+    context.subscriptions.push(vscode.commands.registerCommand('port.toDoc', () => {
+        serialmonitor.outputDoc();
+    }));
 }
 
 // this method is called when your extension is deactivated

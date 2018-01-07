@@ -1,7 +1,7 @@
 {
     "name": "lemon",
     "displayName": "lemon",
-    "description": "a nodemcu tool for vscode extension",
+    "description": "a serial port tool for vscode extension",
     "version": "0.0.1",
     "publisher": "lemon",
     "engines": {
@@ -61,6 +61,11 @@
                 "command": "port.sendSelect",
                 "title": "发送选择内容",
                 "category": "PORT"
+            },
+            {
+                "command": "port.toDoc",
+                "title": "输出到文件",
+                "category": "PORT"
             }
         ],
         "menus": {
@@ -68,17 +73,17 @@
                 {
                     "when": "editorHasSelection",
                     "command": "port.sendSelect",
-                    "group": "navigation"
+                    "group": "1_port"
                 },
                 {
                     "when": "editorTextFocus&&!editorHasSelection",
                     "command": "port.sendALine",
-                    "group": "navigation"
+                    "group": "1_port"
                 },
                 {
                     "when": "editorTextFocus&&!editorHasSelection",
                     "command": "port.sendAll",
-                    "group": "navigation"
+                    "group": "1_port"
                 }
             ]
         }
