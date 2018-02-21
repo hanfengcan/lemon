@@ -3,4 +3,4 @@ node_modules
 .vscode-test/
 .vsix
 README_copy..md
-lemon-0.0.1.vsix
+*.vsix

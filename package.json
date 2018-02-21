@@ -2,10 +2,18 @@
     "name": "lemon",
     "displayName": "lemon",
     "description": "a serial port tool for vscode extension",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "publisher": "lemon",
+    "homepage": "https://github.com/hanfengcan/lemon",
+    "bugs": {
+        "url": "https://github.com/hanfengcan/lemon/issues"
+    },
     "engines": {
         "vscode": "^1.18.0"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/hanfengcan/lemon.git"
     },
     "categories": [
         "Other"
@@ -71,19 +79,19 @@
         "menus": {
             "editor/context": [
                 {
-                    "when": "editorHasSelection",
+                    "when": "editorHasSelection&&serialport",
                     "command": "port.sendSelect",
-                    "group": "1_port"
+                    "group": "navigation"
                 },
                 {
-                    "when": "editorTextFocus&&!editorHasSelection",
+                    "when": "editorTextFocus&&!editorHasSelection&&serialport",
                     "command": "port.sendALine",
-                    "group": "1_port"
+                    "group": "navigation"
                 },
                 {
-                    "when": "editorTextFocus&&!editorHasSelection",
+                    "when": "editorTextFocus&&!editorHasSelection&&serialport",
                     "command": "port.sendAll",
-                    "group": "1_port"
+                    "group": "navigation"
                 }
             ]
         }

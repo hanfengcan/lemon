@@ -17,3 +17,8 @@ Windows用户可以根据情况修改`set.bat`后执行
 
 
 **卸载插件需要在插件未激活的情况下卸载**
+
+
+### 开发简要  
+`vsce package`将插件发布成vsix文件而不是发布到市场  
+`code --install-extension extension.vsix`安装插件
